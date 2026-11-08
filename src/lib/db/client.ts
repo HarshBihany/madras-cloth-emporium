@@ -30,6 +30,52 @@ export function createDb(): Db {
     throw new Error("DATABASE_URL is required in production. See docs/DEPLOYMENT.md.");
   }
   fs.mkdirSync(PGLITE_DIR, { recursive: true });
+  acquireLocalLock();
   const lite = new PGlite(PGLITE_DIR);
   return drizzleLite(lite, { schema }) as unknown as Db;
+}
+
+/**
+ * PGlite is single-process. Two processes opening the same directory (e.g. `npm run dev`
+ * plus `npm run db:seed`) can corrupt it, so we hold a PID lock file while it's open.
+ */
+function acquireLocalLock() {
+  const lockFile = path.join(PGLITE_DIR, "..", "pglite.lock");
+  const isAlive = (pid: number) => {
+    try {
+      process.kill(pid, 0);
+      return true;
+    } catch {
+      return false;
+    }
+  };
+  const holder = () => {
+    try {
+      const pid = Number(fs.readFileSync(lockFile, "utf8"));
+      return pid && pid !== process.pid && isAlive(pid) ? pid : null;
+    } catch {
+      return null;
+    }
+  };
+  // `next dev` briefly overlaps old and new server processes when it restarts,
+  // so wait (synchronously) up to 15s for the previous holder to exit.
+  const sleeper = new Int32Array(new SharedArrayBuffer(4));
+  const deadline = Date.now() + 15_000;
+  let other = holder();
+  while (other && Date.now() < deadline) {
+    Atomics.wait(sleeper, 0, 0, 200);
+    other = holder();
+  }
+  if (other)
+    throw new Error(
+      `The local database is already open in another process (pid ${other}). Stop \`npm run dev\` (or that process) first, or set DATABASE_URL.`,
+    );
+  fs.writeFileSync(lockFile, String(process.pid));
+  const release = () => {
+    try {
+      if (fs.readFileSync(lockFile, "utf8") === String(process.pid)) fs.unlinkSync(lockFile);
+    } catch {}
+  };
+  process.once("exit", release);
+  for (const sig of ["SIGINT", "SIGTERM"] as const) process.once(sig, () => (release(), process.exit(0)));
 }
