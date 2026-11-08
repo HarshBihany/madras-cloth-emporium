@@ -196,7 +196,12 @@ export function CartView() {
           onSubmit={onSubmit}
           onChange={(e) => {
             const n = (e.target as unknown as HTMLInputElement).name;
-            if (n && errors[n]) setErrors(({ [n]: _drop, ...rest }) => rest);
+            if (n && errors[n])
+              setErrors((prev) => {
+                const next = { ...prev };
+                delete next[n];
+                return next;
+              });
           }}
           noValidate
           className="space-y-5 rounded-[1.75rem] border border-sand bg-white/60 p-6 sm:p-8 lg:sticky lg:top-28">

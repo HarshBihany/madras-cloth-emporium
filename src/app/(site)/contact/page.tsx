@@ -21,7 +21,7 @@ export default function ContactPage() {
       <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         <a href={whatsappUrl("Hello Madras Cloth Emporium!")} target="_blank" rel="noopener noreferrer" className="card-lift rounded-3xl bg-[#1f7a4d] p-6 text-white">
           <WhatsAppIcon className="h-7 w-7" />
-          <p className="mt-6 text-xs font-bold uppercase tracking-[0.18em] text-white/80">WhatsApp — fastest</p>
+          <p className="mt-6 text-xs font-bold uppercase tracking-[0.18em] text-white">WhatsApp — fastest</p>
           <p className="mt-1 font-display text-2xl">{business.phoneDisplay}</p>
         </a>
         <a href={`tel:${business.phoneTel}`} className="card-lift rounded-3xl border border-sand bg-white/60 p-6">

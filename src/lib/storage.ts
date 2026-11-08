@@ -41,6 +41,8 @@ export async function uploadProductImage(file: File): Promise<{ url: string } | 
     const res = await fetch(`${base}/storage/v1/object/${bucket}/${name}`, {
       method: "POST",
       headers: {
+        // Works with both legacy service_role JWTs and newer sb_secret_… keys
+        apikey: process.env.SUPABASE_SERVICE_ROLE_KEY!,
         Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
         "Content-Type": kind.mime,
         "Cache-Control": "31536000",

@@ -2,7 +2,6 @@ import { z } from "zod";
 
 /** Strip control characters (keeps newlines/tabs) and trim. */
 export function clean(s: string) {
-  // eslint-disable-next-line no-control-regex
   return s.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, "").trim();
 }
 
