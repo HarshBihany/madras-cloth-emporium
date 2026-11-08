@@ -6,13 +6,8 @@ import { categories, products, productVariants, type Category, type Product, typ
 export type ProductWithCategory = Product & { category: Pick<Category, "slug" | "name"> };
 export type ProductDetail = ProductWithCategory & { variants: ProductVariant[] };
 
-export const SORTS = {
-  featured: "Featured",
-  newest: "Newest",
-  "price-asc": "Price: low to high",
-  "price-desc": "Price: high to low",
-} as const;
-export type SortKey = keyof typeof SORTS;
+import { SORTS, type SortKey } from "@/lib/sorts";
+export { SORTS, type SortKey };
 
 export type CatalogFilters = {
   q?: string;
