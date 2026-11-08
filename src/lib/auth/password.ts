@@ -14,15 +14,17 @@ function scrypt(password: string, salt: Buffer, n = N, r = R, p = P): Promise<Bu
   );
 }
 
-/** Format: scrypt$N$r$p$saltB64$hashB64 */
+/** Format: scrypt:N:r:p:saltB64:hashB64 */
 export async function hashPassword(password: string) {
   const salt = randomBytes(16);
   const key = await scrypt(password, salt);
-  return `scrypt$${N}$${R}$${P}$${salt.toString("base64")}$${key.toString("base64")}`;
+  // ":"-separated on purpose: .env loaders (incl. Next.js) expand "$VARS", which would corrupt a "$"-separated hash.
+  return `scrypt:${N}:${R}:${P}:${salt.toString("base64")}:${key.toString("base64")}`;
 }
 
 export async function verifyPassword(password: string, stored: string) {
-  const parts = stored.split("$");
+  const s = stored.trim();
+  const parts = s.split(s.includes(":") ? ":" : "$");
   if (parts.length !== 6 || parts[0] !== "scrypt") return false;
   const [, n, r, p, saltB64, hashB64] = parts;
   const expected = Buffer.from(hashB64, "base64");

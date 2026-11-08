@@ -4,6 +4,7 @@
  *   npm run db:seed             insert categories + clearly-marked demo products (idempotent)
  *   npm run db:seed -- --reset  delete ALL demo products first, then re-seed
  *   npm run db:remove-demo      delete every demo product (keeps your real products)
+ *   npm run db:clear-rate-limits  unlock admin login after too many failed attempts
  *
  * Uses DATABASE_URL if set, otherwise the local PGlite database in .data/pglite.
  */
@@ -78,6 +79,10 @@ async function removeDemo() {
     await migrate();
     await seed();
   } else if (cmd === "remove-demo") await removeDemo();
+  else if (cmd === "clear-rate-limits") {
+    await db.delete(s.rateLimits);
+    console.log("✓ Cleared login/form rate limits");
+  }
   else {
     console.log("Usage: tsx scripts/db.ts <migrate|seed|setup|remove-demo> [--reset]");
     process.exit(1);
