@@ -5,7 +5,7 @@ import { useActionState } from "react";
 import { CheckCircle2 } from "lucide-react";
 import { submitEnquiry, type EnquiryState } from "@/app/actions/enquiry";
 import { FORMS, type FieldDef, type FormType } from "@/lib/forms";
-import { WhatsAppIcon } from "@/components/site/WhatsAppFab";
+import { WhatsAppAutoOpen } from "./WhatsAppAutoOpen";
 
 export function EnquiryForm({ type, submitLabel, defaults = {} }: { type: FormType; submitLabel: string; defaults?: Record<string, string> }) {
   const [state, action, pending] = useActionState<EnquiryState, FormData>(submitEnquiry, { status: "idle" });
@@ -16,12 +16,10 @@ export function EnquiryForm({ type, submitLabel, defaults = {} }: { type: FormTy
         <CheckCircle2 className="mx-auto h-12 w-12 text-success" aria-hidden />
         <h3 className="mt-4 text-3xl">Thank you — we&apos;ve received it.</h3>
         <p className="mt-2 text-charcoal-soft">
-          Reference <strong className="font-mono text-maroon">{state.reference}</strong>. We usually reply on WhatsApp. For a quicker response, send
-          your request directly:
+          Reference <strong className="font-mono text-maroon">{state.reference}</strong>. Your request is saved and our team has been notified.
+          We&apos;re now opening WhatsApp with your details so you can reach us directly.
         </p>
-        <a href={state.whatsappUrl} target="_blank" rel="noopener noreferrer" className="btn btn-whatsapp mt-6">
-          <WhatsAppIcon className="h-5 w-5" /> Send on WhatsApp too
-        </a>
+        <WhatsAppAutoOpen url={state.whatsappUrl} label="Send on WhatsApp" />
       </div>
     );
 

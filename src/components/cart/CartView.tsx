@@ -10,6 +10,7 @@ import { placeOrder } from "@/app/actions/checkout";
 import { FabricArt, type ArtShape } from "@/components/fabric/FabricArt";
 import { WhatsAppIcon } from "@/components/site/WhatsAppFab";
 import { DemoBadge } from "@/components/product/ProductCard";
+import { WhatsAppAutoOpen } from "@/components/forms/WhatsAppAutoOpen";
 import type { FieldErrors } from "@/lib/validation";
 
 function LineThumb({ l }: { l: CartLine }) {
@@ -68,9 +69,7 @@ export function CartView() {
           Your reference is <strong className="font-mono text-lg text-maroon">{done.orderNumber}</strong>. Send it to us on WhatsApp — our team will confirm
           availability, final price and delivery.
         </p>
-        <a href={done.url} target="_blank" rel="noopener noreferrer" className="btn btn-whatsapp mt-8 w-full sm:w-auto">
-          <WhatsAppIcon className="h-5 w-5" /> Send order on WhatsApp
-        </a>
+        <WhatsAppAutoOpen url={done.url} label="Send order on WhatsApp" />
         <p className="mt-6 text-sm text-stone">
           Keep your reference to{" "}
           <Link href="/track" className="link-underline text-maroon">

@@ -118,6 +118,7 @@ export async function submitEnquiry(_prev: EnquiryState, fd: FormData): Promise<
       `*${FORMS[t].title}* (${reference})`,
       `Name: ${name}`,
       `Phone: ${phone}`,
+      email ? `Email: ${email}` : "",
       city ? `City: ${city}` : "",
       ...Object.entries(details).map(([k, v]) => `${labels[k] ?? k}: ${v}`),
       message ? `\n${message}` : "",
@@ -125,7 +126,10 @@ export async function submitEnquiry(_prev: EnquiryState, fd: FormData): Promise<
       .filter(Boolean)
       .join("\n");
 
-    void notifyOwner(`${FORMS[t].title} from ${name}`, summary);
+    await notifyOwner(`${FORMS[t].title} from ${name}`, summary, {
+      replyTo: email ? String(email) : null,
+      adminPath: `/admin/enquiries?type=${t}`,
+    });
     return { status: "success", reference, whatsappUrl: whatsappUrl(summary) };
   } catch (e) {
     console.error("submitEnquiry failed", e);

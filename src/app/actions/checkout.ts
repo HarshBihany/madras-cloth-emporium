@@ -197,7 +197,10 @@ export async function placeOrder(input: CheckoutInput): Promise<CheckoutResult> 
     `Track: ${siteUrl}/track`,
   ].join("\n");
 
-  void notifyOwner(`New order request ${orderNumber} — ${formatPaise(subtotal)}`, message);
+  await notifyOwner(`New order request ${orderNumber} — ${formatPaise(subtotal)}`, message, {
+    replyTo: v.email || null,
+    adminPath: `/admin/orders/${orderId}`,
+  });
 
   return { ok: true, orderNumber, whatsappUrl: whatsappUrl(message), totalPaise: subtotal, message };
 }
