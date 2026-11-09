@@ -25,7 +25,7 @@ Total cost: **₹0**, no credit card. You'll get a free address like `https://ma
    DATABASE_URL="…same…" npm run db:seed        # optional: categories + labelled demo products
    ```
    (Windows PowerShell: `$env:DATABASE_URL="…"; npm run db:migrate`.)
-   Alternative: paste each file in `drizzle/*.sql` (in order) into Supabase → SQL Editor, then add categories via `npm run db:seed`.
+   **No Node.js? Easiest option:** open Supabase → **SQL Editor → New query**, paste the whole of [`supabase/setup.sql`](../supabase/setup.sql) and click **Run**. It creates every table, enables Row Level Security, records the migrations (so `npm run db:migrate` stays in sync later) and loads the categories + demo catalogue. The last line should show `5 | 64`.
 4. **Photo storage** (optional but recommended): Supabase → Storage → **New bucket** `product-images`, set **Public**. Then Project Settings → API → copy the **Project URL** (`SUPABASE_URL`) and the **service_role** key — or, on newer projects, a **secret** key (`sb_secret_…`) — into `SUPABASE_SERVICE_ROLE_KEY` (server-only, never share it).
 
 ## 3. Deploy the site (Netlify Free)
