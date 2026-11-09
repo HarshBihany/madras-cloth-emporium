@@ -47,3 +47,6 @@ public/uploads/
 
 # source archives
 *.zip
+
+# netlify local build output
+.netlify/
